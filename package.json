@@ -1,0 +1,11 @@
+{
+    "name": "ralph-demo",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Маленький проект, на котором видно, как петля доводит карточку до мерджа",
+    "scripts": {
+        "syntax": "node --check src/text.mjs",
+        "test": "node --test"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Bash|Read|Edit|Write|MultiEdit|NotebookEdit|Grep|mcp__.*",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard.cjs\"",
+                        "timeout": 10
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "defaultProfile": "demo",
+    "common": {
+        "active": true,
+        "maxIterations": 6,
+        "maxTurns": 60,
+        "claudeTimeoutMs": 1800000,
+        "authorAllowlist": ["lyapindm"],
+        "model": "claude-sonnet-5",
+        "fallbackModel": "claude-sonnet-5",
+        "permissionMode": "bypassPermissions",
+        "installCmd": "node --version",
+        "runnerWorktreeDirname": "ralph-demo-ralph",
+        "adapters": {
+            "taskSource": "sourcecraft",
+            "deployCheck": "none"
+        },
+        "gate": {
+            "checks": [
+                ["syntax", "npm run syntax"],
+                ["test", "npm test"]
+            ],
+            "externalCi": "disabled"
+        },
+        "modelRouting": {
+            "default": "claude-sonnet-5",
+            "labels": {
+                "complexity:low": "claude-sonnet-5",
+                "complexity:medium": "claude-sonnet-5",
+                "complexity:high": "claude-opus-4-8",
+                "complexity:expert": "claude-opus-4-8"
+            }
+        },
+        "review": {
+            "default": "claude-opus-4-8",
+            "escalated": "claude-fable-5",
+            "fallback": "claude-opus-4-8",
+            "escalateOn": [],
+            "escalateOnPaths": [],
+            "maxTurns": 20,
+            "diffLimit": 10000
+        },
+        "prompt": "Прочитай ralph.md в корне дерева и .claude/ralph/ralph.project.md и строго следуй правилам оттуда. Возьми задачу из milestone '{milestone}' и доведи её до зелёного гейта в ветке '{branch}'.",
+        "phases": [
+            {
+                "milestone": "Демо · Фаза 1: Строки",
+                "branch": "feature/demo-phase-1-strings"
+            }
+        ]
+    },
+    "profiles": {
+        "demo": {}
+    }
+}
