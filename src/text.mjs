@@ -14,3 +14,32 @@ export function slugify(text) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
+
+/**
+ * Обрезает строку до `max` символов (Unicode code points, а не UTF-16 единиц, поэтому
+ * эмодзи не разрезается); обрезанный текст заканчивается на `…`, и вместе с ним длина
+ * ровно `max`.
+ * @param {string} text
+ * @param {number} max максимальная длина результата, целое не меньше 1
+ * @returns {string}
+ * @throws {RangeError} если `max` не целое или меньше 1
+ */
+export function truncate(text, max) {
+    if (!Number.isInteger(max) || max < 1) {
+        throw new RangeError(`max must be an integer >= 1, got ${max}`);
+    }
+    const chars = Array.from(text);
+    if (chars.length <= max) {
+        return text;
+    }
+    return chars.slice(0, max - 1).join('') + '…';
+}
+
+/**
+ * Число слов в строке: слово — непустой отрезок между пробельными символами.
+ * @param {string} text
+ * @returns {number}
+ */
+export function wordCount(text) {
+    return text.match(/\S+/g)?.length ?? 0;
+}
