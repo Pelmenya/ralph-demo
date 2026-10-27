@@ -15,6 +15,7 @@ import {
     startsWithWord,
     titleCase,
     truncate,
+    uniqueWords,
     wordCount,
 } from '../src/text.mjs';
 
@@ -319,4 +320,14 @@ test('repeatWord: n <= 0 дают пустую строку', () => {
 test('repeatWord: слово n раз через пробел', () => {
     assert.equal(repeatWord('ой', 3), 'ой ой ой');
     assert.equal(repeatWord('a', 1), 'a');
+});
+
+test('uniqueWords: пустая строка и строка без слов', () => {
+    assert.equal(uniqueWords(''), '');
+    assert.equal(uniqueWords(' \n '), '');
+});
+
+test('uniqueWords: повторы убираются, порядок первого появления', () => {
+    assert.equal(uniqueWords('a b a  c b'), 'a b c');
+    assert.equal(uniqueWords('x x x'), 'x');
 });

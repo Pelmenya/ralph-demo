@@ -212,3 +212,13 @@ export function lastWord(text) {
 export function repeatWord(word, n) {
     return n > 0 ? Array(Math.floor(n)).fill(word).join(' ') : '';
 }
+
+/**
+ * Слова строки без повторов в порядке первого появления через один пробел; слово —
+ * непустой отрезок между пробельными символами, сравнение точное (регистр различается).
+ * @param {string} text
+ * @returns {string}
+ */
+export function uniqueWords(text) {
+    return [...new Set(words(text))].join(' ');
+}
