@@ -83,3 +83,30 @@ test('titleCase: первая буква заглавная, остальные 
 test('titleCase: пробельные символы сохраняются как есть', () => {
     assert.equal(titleCase('  a\tb\n'), '  A\tB\n');
 });
+
+test('titleCase: символ вне BMP не разрезается', () => {
+    assert.equal(titleCase('𐐨𐐨 x'), '𐐀𐐨 X');
+});
+
+test('titleCase: кириллица', () => {
+    assert.equal(titleCase('привет МИР'), 'Привет Мир');
+});
+
+test('titleCase: греческая конечная сигма', () => {
+    assert.equal(titleCase('ΟΣ'), 'Ος');
+});
+
+test('titleCase: идемпотентность и однобуквенные слова', () => {
+    assert.equal(titleCase('A b C'), 'A B C');
+    assert.equal(titleCase(titleCase('hello WORLD')), 'Hello World');
+});
+
+test('titleCase: ведущая пунктуация не меняется, цифра в начале слова', () => {
+    assert.equal(titleCase('(HELLO) «мир»'), '(hello) «мир»');
+    assert.equal(titleCase('1st PLACE'), '1st Place');
+});
+
+test('titleCase: \\r\\n, неразрывный пробел и одни пробелы', () => {
+    assert.equal(titleCase('a\r\nb\u00a0c'), 'A\r\nB\u00a0C');
+    assert.equal(titleCase('   '), '   ');
+});

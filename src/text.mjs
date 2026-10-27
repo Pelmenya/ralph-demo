@@ -35,24 +35,31 @@ export function truncate(text, max) {
     return chars.slice(0, max - 1).join('') + '…';
 }
 
+/** Слово — непустой отрезок между пробельными символами (общее для `wordCount` и `titleCase`). */
+const WORD = /\S+/g;
+
 /**
  * Число слов в строке: слово — непустой отрезок между пробельными символами.
  * @param {string} text
  * @returns {number}
  */
 export function wordCount(text) {
-    return text.match(/\S+/g)?.length ?? 0;
+    return text.match(WORD)?.length ?? 0;
 }
 
 /**
- * Первая буква каждого слова — заглавная, остальные — строчные; слово — непустой отрезок
+ * Первый символ каждого слова — заглавный, остальные — строчные; слово — непустой отрезок
  * между пробельными символами, сами пробельные символы сохраняются как есть.
+ * Первый символ — это первая кодовая точка слова, а не первая буква: у слова с ведущей
+ * пунктуацией (`(hello)`, `«мир»`) регистр не меняется, дефис слов не разделяет.
+ * Регистр — `toUpperCase`/`toLowerCase` без учёта локали (`istanbul` → `Istanbul`), а не
+ * titlecase Unicode: `ß` даёт `SS`, `ǆ` — `Ǆ` (не `ǅ`), поэтому длина строки может
+ * измениться.
  * @param {string} text
  * @returns {string}
  */
 export function titleCase(text) {
-    return text.replace(/\S+/g, (word) => {
-        const [first, ...rest] = Array.from(word);
-        return first.toUpperCase() + rest.join('').toLowerCase();
-    });
+    return text.replace(WORD, (word) =>
+        word.toLowerCase().replace(/^./u, (first) => first.toUpperCase()),
+    );
 }
