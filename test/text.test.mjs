@@ -6,6 +6,7 @@ import {
     capitalize,
     repeatWord,
     countVowels,
+    hasRepeatedWord,
     initials,
     isBlank,
     lastWord,
@@ -330,4 +331,13 @@ test('uniqueWords: пустая строка и строка без слов', (
 test('uniqueWords: повторы убираются, порядок первого появления', () => {
     assert.equal(uniqueWords('a b a  c b'), 'a b c');
     assert.equal(uniqueWords('x x x'), 'x');
+});
+
+test('hasRepeatedWord: повтор подряд без учёта регистра', () => {
+    assert.equal(hasRepeatedWord('the The cat'), true);
+});
+
+test('hasRepeatedWord: неподряд и пустая строка — false', () => {
+    assert.equal(hasRepeatedWord('a b a'), false);
+    assert.equal(hasRepeatedWord(''), false);
 });

@@ -222,3 +222,13 @@ export function repeatWord(word, n) {
 export function uniqueWords(text) {
     return [...new Set(words(text))].join(' ');
 }
+
+/**
+ * Есть ли в строке слово, повторённое дважды подряд, без учёта регистра.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function hasRepeatedWord(text) {
+    const list = words(text).map(normalizeWord);
+    return list.some((word, i) => i > 0 && word === list[i - 1]);
+}
