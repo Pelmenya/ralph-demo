@@ -1,0 +1,60 @@
+d --provenance=false --sbom=false -t sample-repo-backend:abc12345 <repo>",[22m
+[2m    "image inspect sample-repo-frontend:abc12345",[22m
+[2m    "tag sha256:running sample-repo-frontend:previous",[22m
+[2m    "image inspect sample-repo-backend:abc12345",[22m
+[2m    "compose[IMAGE_TAG=abc12345,BACKEND_IMAGE_TAG=abc12345] up -d --no-build --wait --wait-timeout 60 frontend",[22m
+[32m-   "-fsS --max-time 15 --retry 2 --retry-delay 2 --retry-connrefused https://sample-repo.test/api/repositories?limit=1",[39m
+[31m+   "-fsS --max-time 15 --retry 2 --retry-delay 2 --retry-connrefused https:/<repo>.test/api<repo>sitories?limit=1",[39m
+[2m    "tag sample-repo-frontend:abc12345 sample-repo-frontend:latest",[22m
+[2m    "tag sample-repo-backend:abc12345 sample-repo-backend:latest",[22m
+[2m    "images --format {{.Repository}}:{{.Tag}} sample-repo-frontend",[22m
+[2m    "rmi sample-repo-frontend:0badc0de",[22m
+[2m    "images --format {{.Repository}}:{{.Tag}} sample-repo-backend",[22m
+
+[36m [2m❯[22m scripts/deploy-partial.test.ts:[2m60:36[22m[39m
+    [90m 58|[39m
+    [90m 59|[39m     it("поднимает ОДНУ витрину и не трогает точку отката бэкенда", () …
+    [90m 60|[39m         [34mexpect[39m([34msteps[39m(environment))[33m.[39m[34mtoEqual[39m([
+    [90m   |[39m                                    [31m^[39m
+    [90m 61|[39m             [32m"compose ps -q frontend"[39m[33m,[39m
+    [90m 62|[39m             [32m"inspect container-id"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m [30m[43m deploy [49m[39m scripts/deploy.test.ts[2m > [22mdeploy/scripts/deploy.sh: успешный деплой поверх работающих служб[2m > [22mидёт по шагам обеих служб: запомнить → собрать → пометить откат → поднять → проверить API → прибрать
+[31m[1mAssertionError[22m: expected [ 'compose ps -q frontend', …(19) ] to deeply equal [ 'compose ps -q frontend', …(19) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -8,11 +8,11 @@[39m
+[2m    "image inspect sample-repo-frontend:abc12345",[22m
+[2m    "tag sha256:running sample-repo-frontend:previous",[22m
+[2m    "image inspect sample-repo-backend:abc12345",[22m
+[2m    "tag sha256:running sample-repo-backend:previous",[22m
+[2m    "compose[IMAGE_TAG=abc12345,BACKEND_IMAGE_TAG=abc12345] up -d --no-build --wait --wait-timeout 60 frontend backend",[22m
+[32m-   "-fsS --max-time 15 --retry 2 --retry-delay 2 --retry-connrefused https://sample-repo.test/api/repositories?limit=1",[39m
+[31m+   "-fsS --max-time 15 --retry 2 --retry-delay 2 --retry-connrefused https:/<repo>.test/api<repo>sitories?limit=1",[39m
+[2m    "tag sample-repo-frontend:abc12345 sample-repo-frontend:latest",[22m
+[2m    "tag sample-repo-backend:abc12345 sample-repo-backend:latest",[22m
+[2m    "images --format {{.Repository}}:{{.Tag}} sample-repo-frontend",[22m
+[2m    "rmi sample-repo-frontend:0badc0de",[22m
+[2m    "images --format {{.Repository}}:{{.Tag}} sample-repo-backend",[22m
+
+[36m [2m❯[22m scripts/deploy.test.ts:[2m58:36[22m[39m
+    [90m 56|[39m
+    [90m 57|[39m     it("идёт по шагам обеих служб: запомнить → собрать → пометить отка…
+    [90m 58|[39m         [34mexpect[39m([34msteps[39m(environment))[33m.[39m[34mtoEqual[39m([
+    [90m   |[39m                                    [31m^[39m
+    [90m 59|[39m             [32m"compose ps -q frontend"[39m[33m,[39m
+    [90m 60|[39m             [32m"inspect container-id"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m435 passed[39m[22m[90m (437)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m7172 passed[39m[22m[90m (7174)[39m
+[2m   Start at [22m 20:18:13
+[2m   Duration [22m 164.81s[2m (transform 90.89s, setup 36.17s, import 459.84s, tests 266.63s, environment 173.06s)[22m
+
+JSON report written to /repo/reports/vitest-report.json

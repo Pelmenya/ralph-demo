@@ -1,0 +1,23 @@
+{
+    "code_review": {
+        "status": "success",
+        "disabled": false,
+        "total_approves": 0,
+        "need_approves": 0,
+        "rules": []
+    },
+    "conflicts": { "status": "success", "conflicts": [] },
+    "ci_workflows": [
+        {
+            "status": "success",
+            "disabled": false,
+            "created_at": "2026-09-06T05:11:30.213083Z",
+            "run_id": "",
+            "run_slug": "366",
+            "workflow_id": "",
+            "workflow_slug": "gate"
+        }
+    ],
+    "config_validations": [],
+    "status": "success"
+}
