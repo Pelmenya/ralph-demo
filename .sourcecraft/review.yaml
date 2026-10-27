@@ -1,0 +1,22 @@
+## Правила код-ревью демо-потребителя.
+##
+## Обычный PR мёржится без человека. Правка того, что выбирает ревизию ядра раннера
+## (lock и launcher), требует ship человека: петля не должна сама себе обновлять код,
+## которым её проверяют. Canary матрицы защиты lock в каноне гоняются здесь.
+
+codereview:
+    need_ships: 0
+    ignore_self_ship: false
+    auto_assign: false
+
+    rules:
+        - patterns:
+              - '.ralph/**'
+              - 'ralph'
+              - '.sourcecraft/**'
+          reviewers:
+              usernames:
+                  - 'lyapindm'
+              assign: 1
+              need_ships: 1
+              ignore_self_ship: false
