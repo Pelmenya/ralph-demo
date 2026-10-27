@@ -6,6 +6,16 @@ node_modules/
 .claude/ralph/*
 !.claude/ralph/ralph.config.json.example
 !.claude/ralph/ralph.project.md
+# Репетиция отката (#107 канона): встроенная копия ядра 1c93053 в раскладке продового
+# потребителя. Удаляется после возврата на внешнюю установку.
+!.claude/ralph/ralph.js
+!.claude/ralph/gate-env.mts
+!.claude/ralph/gate-env-allowlist.json
+!.claude/ralph/core/
+!.claude/ralph/runtime/
+!.claude/ralph/shared/
+!.claude/ralph/adapters/
+!.claude/ralph/provision/
 
 # Секреты форжа и модели живут в окружении, не в дереве.
 .env
