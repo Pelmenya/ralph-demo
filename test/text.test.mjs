@@ -8,6 +8,7 @@ import {
     isBlank,
     reverseWords,
     slugify,
+    squeeze,
     titleCase,
     truncate,
     wordCount,
@@ -197,4 +198,17 @@ test('capitalize: только первая буква, остальное бе�
 test('capitalize: ведущая пунктуация и символ вне BMP не меняются и не разрезаются', () => {
     assert.equal(capitalize('(ada)'), '(ada)');
     assert.equal(capitalize('😀a'), '😀a');
+});
+
+test('squeeze: пустая строка', () => {
+    assert.equal(squeeze(''), '');
+});
+
+test('squeeze: подряд идущие пробельные символы — один пробел, края обрезаны', () => {
+    assert.equal(squeeze(' a \t\n b '), 'a b');
+    assert.equal(squeeze('a \r\n b'), 'a b');
+});
+
+test('squeeze: строка из одних пробелов — пустая', () => {
+    assert.equal(squeeze(' \t\n '), '');
 });

@@ -128,3 +128,13 @@ export function reverseWords(text) {
 export function capitalize(text) {
     return text.replace(/^./su, (first) => first.toUpperCase());
 }
+
+/**
+ * Схлопывает подряд идущие пробельные символы в один пробел и обрезает края.
+ * Пробельным считается всё, что матчит `\s` (включая NBSP, табы и переводы строк).
+ * @param {string} text
+ * @returns {string} строка без ведущих и хвостовых пробелов; для пустой — пустая.
+ */
+export function squeeze(text) {
+    return text.replace(/\s+/gu, ' ').trim();
+}
