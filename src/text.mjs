@@ -58,6 +58,15 @@ export function wordCount(text) {
 }
 
 /**
+ * Первая кодовая точка строки в верхнем регистре, остальное без изменений.
+ * @param {string} text
+ * @returns {string}
+ */
+function upperFirst(text) {
+    return text.replace(/^./u, (first) => first.toUpperCase());
+}
+
+/**
  * Первый символ каждого слова — заглавный, остальные — строчные; слово — непустой отрезок
  * между пробельными символами, сами пробельные символы сохраняются как есть.
  * Первый символ — это первая кодовая точка слова, а не первая буква: у слова с ведущей
@@ -69,9 +78,7 @@ export function wordCount(text) {
  * @returns {string}
  */
 export function titleCase(text) {
-    return text.replace(WORD, (word) =>
-        word.toLowerCase().replace(/^./u, (first) => first.toUpperCase()),
-    );
+    return text.replace(WORD, (word) => upperFirst(word.toLowerCase()));
 }
 
 /**
@@ -81,7 +88,7 @@ export function titleCase(text) {
  * не входит: `isBlank('\u200b')` → `false`.
  * @param {string} text
  * @returns {boolean}
- * @throws {TypeError} если `text` не строка (как у остальных функций модуля)
+ * @throws {TypeError} если `text` не строка (остальные функции модуля тип не проверяют)
  */
 export function isBlank(text) {
     if (typeof text !== 'string') {
@@ -121,30 +128,35 @@ export function reverseWords(text) {
  * Первый символ строки — заглавный, остальное без изменений; для пустой строки — пустая.
  * Первый символ — это первая кодовая точка, а не первая буква: у строки с ведущей
  * пунктуацией или цифрой регистр не меняется. Регистр — `toUpperCase` без учёта локали,
- * поэтому длина может измениться (`ß` → `SS`).
+ * поэтому длина может измениться (`ß` → `SS`). Ведущий пробел — тоже первая кодовая
+ * точка: `capitalize(' abc')` → `' abc'` (в отличие от `titleCase`, где слово начинается
+ * с непробельного символа).
  * @param {string} text
  * @returns {string}
  */
 export function capitalize(text) {
-    return text.replace(/^./su, (first) => first.toUpperCase());
+    return upperFirst(text);
 }
 
 /**
  * Схлопывает подряд идущие пробельные символы в один пробел и обрезает края.
- * Пробельным считается всё, что матчит `\s` (включая NBSP, табы и переводы строк).
+ * Пробельным считается всё, что матчит `\s` (включая NBSP, табы и переводы строк), —
+ * то же определение, что у `words`; U+200B пробелом не считается.
  * @param {string} text
  * @returns {string} строка без ведущих и хвостовых пробелов; для пустой — пустая.
  */
 export function squeeze(text) {
-    return text.replace(/\s+/gu, ' ').trim();
+    return words(text).join(' ');
 }
 
 /**
  * Число гласных латиницы (`aeiou`) и кириллицы (`аеёиоуыэюя`) без учёта регистра;
- * `y` и `й` гласными не считаются.
+ * `y` и `й` гласными не считаются. Перед подсчётом строка приводится к NFC, поэтому
+ * разложенные формы считаются как составные (`'и\u0306'` = `й` → 0, `'e\u0301'` = `é` → 0).
+ * Регистры перечислены явно, без флага `i`, чтобы case folding не добавлял символов.
  * @param {string} text
  * @returns {number}
  */
 export function countVowels(text) {
-    return (text.match(/[aeiouаеёиоуыэюя]/giu) ?? []).length;
+    return (text.normalize('NFC').match(/[aeiouAEIOUаеёиоуыэюяАЕЁИОУЫЭЮЯ]/g) ?? []).length;
 }

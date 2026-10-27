@@ -201,6 +201,12 @@ test('capitalize: ведущая пунктуация и символ вне BMP
     assert.equal(capitalize('😀a'), '😀a');
 });
 
+test('capitalize: ß даёт SS, ведущая цифра и ведущий пробел не меняются', () => {
+    assert.equal(capitalize('ßa'), 'SSa');
+    assert.equal(capitalize('1st'), '1st');
+    assert.equal(capitalize(' abc'), ' abc');
+});
+
 test('squeeze: пустая строка', () => {
     assert.equal(squeeze(''), '');
 });
@@ -214,6 +220,11 @@ test('squeeze: строка из одних пробелов — пустая', 
     assert.equal(squeeze(' \t\n '), '');
 });
 
+test('squeeze: NBSP и U+3000 — пробельные, U+200B — нет', () => {
+    assert.equal(squeeze('a\u00a0\u3000b'), 'a b');
+    assert.equal(squeeze('a\u200bb'), 'a\u200bb');
+});
+
 test('countVowels: пустая строка', () => {
     assert.equal(countVowels(''), 0);
 });
@@ -225,4 +236,18 @@ test('countVowels: латиница и кириллица без учёта ре
 
 test('countVowels: согласные и цифры не считаются', () => {
     assert.equal(countVowels('rhythm 123 стр'), 0);
+});
+
+test('countVowels: заглавная кириллица, включая Ё', () => {
+    assert.equal(countVowels('АЕЁИОУЫЭЮЯ'), 10);
+});
+
+test('countVowels: й не гласная, в том числе в разложенной форме', () => {
+    assert.equal(countVowels('йЙ'), 0);
+    assert.equal(countVowels('и\u0306'), 0);
+    assert.equal(countVowels('e\u0301'), 0);
+});
+
+test('countVowels: case folding не добавляет гласных', () => {
+    assert.equal(countVowels('\u1c82'), 0);
 });
