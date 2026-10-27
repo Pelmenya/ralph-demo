@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+    capitalize,
     initials,
     isBlank,
     reverseWords,
@@ -183,4 +184,17 @@ test('reverseWords: одно слово и строка из пробелов', 
 test('reverseWords: NBSP и \\r\\n разделяют слова, буквы внутри слова не переворачиваются', () => {
     assert.equal(reverseWords('a\u00a0b\r\nc'), 'c b a');
     assert.equal(reverseWords('ab cd'), 'cd ab');
+});
+
+test('capitalize: пустая строка', () => {
+    assert.equal(capitalize(''), '');
+});
+
+test('capitalize: только первая буква, остальное без изменений', () => {
+    assert.equal(capitalize('ёж ЁЖ'), 'Ёж ЁЖ');
+});
+
+test('capitalize: ведущая пунктуация и символ вне BMP не меняются и не разрезаются', () => {
+    assert.equal(capitalize('(ada)'), '(ada)');
+    assert.equal(capitalize('😀a'), '😀a');
 });

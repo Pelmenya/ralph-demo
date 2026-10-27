@@ -116,3 +116,15 @@ export function initials(text) {
 export function reverseWords(text) {
     return words(text).reverse().join(' ');
 }
+
+/**
+ * Первый символ строки — заглавный, остальное без изменений; для пустой строки — пустая.
+ * Первый символ — это первая кодовая точка, а не первая буква: у строки с ведущей
+ * пунктуацией или цифрой регистр не меняется. Регистр — `toUpperCase` без учёта локали,
+ * поэтому длина может измениться (`ß` → `SS`).
+ * @param {string} text
+ * @returns {string}
+ */
+export function capitalize(text) {
+    return text.replace(/^./su, (first) => first.toUpperCase());
+}
