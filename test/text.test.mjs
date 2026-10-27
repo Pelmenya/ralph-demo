@@ -10,6 +10,7 @@ import {
     reverseWords,
     slugify,
     squeeze,
+    startsWithWord,
     titleCase,
     truncate,
     wordCount,
@@ -250,4 +251,19 @@ test('countVowels: й не гласная, в том числе в разлож�
 
 test('countVowels: case folding не добавляет гласных', () => {
     assert.equal(countVowels('\u1c82'), 0);
+});
+
+test('startsWithWord: пустая строка и строка без слов — false', () => {
+    assert.equal(startsWithWord('', 'a'), false);
+    assert.equal(startsWithWord('   ', 'a'), false);
+});
+
+test('startsWithWord: ведущие пробелы и регистр не важны', () => {
+    assert.equal(startsWithWord('  Hello world', 'hello'), true);
+    assert.equal(startsWithWord('hello world', 'HELLO'), true);
+});
+
+test('startsWithWord: сравнивается только первое слово целиком', () => {
+    assert.equal(startsWithWord('hello world', 'world'), false);
+    assert.equal(startsWithWord('helloworld', 'hello'), false);
 });

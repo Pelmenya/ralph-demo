@@ -160,3 +160,16 @@ export function squeeze(text) {
 export function countVowels(text) {
     return (text.normalize('NFC').match(/[aeiouAEIOUаеёиоуыэюяАЕЁИОУЫЭЮЯ]/g) ?? []).length;
 }
+
+/**
+ * Равно ли первое слово строки `word` без учёта регистра; слово — непустой отрезок между
+ * пробельными символами, ведущие пробелы пропускаются. Регистр — `toLowerCase` без учёта
+ * локали. Для строки без слов — `false`.
+ * @param {string} text
+ * @param {string} word
+ * @returns {boolean}
+ */
+export function startsWithWord(text, word) {
+    const [first] = words(text);
+    return first !== undefined && first.toLowerCase() === word.toLowerCase();
+}
