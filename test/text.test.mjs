@@ -5,15 +5,18 @@ import assert from 'node:assert/strict';
 import {
     capitalize,
     countVowels,
+    hasRepeatedWord,
     initials,
     isBlank,
     lastWord,
+    repeatWord,
     reverseWords,
     slugify,
     squeeze,
     startsWithWord,
     titleCase,
     truncate,
+    uniqueWords,
     wordCount,
 } from '../src/text.mjs';
 
@@ -308,4 +311,91 @@ test('lastWord: пунктуация, не-BMP и разные хвостовы�
     assert.equal(lastWord('hi 👋'), '👋');
     assert.equal(lastWord('a b\n'), 'b');
     assert.equal(lastWord('a b\u00a0'), 'b');
+});
+
+test('repeatWord: n <= 0 дают пустую строку', () => {
+    assert.equal(repeatWord('a', 0), '');
+    assert.equal(repeatWord('a', -2), '');
+});
+
+test('repeatWord: слово n раз через пробел', () => {
+    assert.equal(repeatWord('ой', 3), 'ой ой ой');
+    assert.equal(repeatWord('a', 1), 'a');
+});
+
+test('repeatWord: не целое n — RangeError', () => {
+    for (const n of [0.5, 2.7, Infinity, -Infinity, NaN, 2 ** 32 + 0.5, '3', undefined]) {
+        assert.throws(() => repeatWord('a', n), RangeError);
+    }
+});
+
+test('repeatWord: огромное целое n — RangeError движка, а не зависание', () => {
+    assert.throws(() => repeatWord('a', 2 ** 32), RangeError);
+});
+
+test('repeatWord: пустое слово и слово с пробелами — RangeError, не строка — TypeError', () => {
+    assert.throws(() => repeatWord('', 3), RangeError);
+    assert.throws(() => repeatWord('a b', 2), RangeError);
+    assert.throws(() => repeatWord('a b', 2), RangeError);
+    assert.throws(() => repeatWord(5, 2), TypeError);
+});
+
+test('uniqueWords: пустая строка и строка без слов', () => {
+    assert.equal(uniqueWords(''), '');
+    assert.equal(uniqueWords(' \n '), '');
+});
+
+test('uniqueWords: повторы убираются, порядок первого появления', () => {
+    assert.equal(uniqueWords('a b a  c b'), 'a b c');
+    assert.equal(uniqueWords('x x x'), 'x');
+});
+
+test('uniqueWords: регистр различается', () => {
+    assert.equal(uniqueWords('A a'), 'A a');
+    assert.equal(uniqueWords('The the'), 'The the');
+});
+
+test('uniqueWords: разные пробельные разделители, края не попадают в вывод', () => {
+    assert.equal(uniqueWords('  a\tb\na b c  '), 'a b c');
+});
+
+test('uniqueWords: NFC-формы совпадают, выводится первое вхождение', () => {
+    assert.equal(uniqueWords('café café'), 'café');
+    assert.equal(uniqueWords('café café'), 'café');
+});
+
+test('uniqueWords: слова вне BMP', () => {
+    assert.equal(uniqueWords('😀 a 😀'), '😀 a');
+});
+
+test('hasRepeatedWord: повтор подряд без учёта регистра', () => {
+    assert.equal(hasRepeatedWord('the The cat'), true);
+    assert.equal(hasRepeatedWord('Мир мир'), true);
+});
+
+test('hasRepeatedWord: неподряд и пустая строка — false', () => {
+    assert.equal(hasRepeatedWord('a b a'), false);
+    assert.equal(hasRepeatedWord(''), false);
+});
+
+test('hasRepeatedWord: повтор в конце строки', () => {
+    assert.equal(hasRepeatedWord('a b c c'), true);
+});
+
+test('hasRepeatedWord: одно слово и строка из пробелов — false', () => {
+    assert.equal(hasRepeatedWord('a'), false);
+    assert.equal(hasRepeatedWord(' \t\n '), false);
+});
+
+test('hasRepeatedWord: разделители кроме пробела', () => {
+    assert.equal(hasRepeatedWord('a\na'), true);
+    assert.equal(hasRepeatedWord('a a'), true);
+});
+
+test('hasRepeatedWord: NFC-формы считаются одним словом', () => {
+    assert.equal(hasRepeatedWord('café café'), true);
+});
+
+test('hasRepeatedWord: пунктуация — часть слова', () => {
+    assert.equal(hasRepeatedWord('the, the'), false);
 });

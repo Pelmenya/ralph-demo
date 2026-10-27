@@ -202,3 +202,62 @@ export function startsWithWord(text, word) {
 export function lastWord(text) {
     return words(text).at(-1) ?? '';
 }
+
+/**
+ * Слово, повторённое `n` раз через пробел; при `n <= 0` — пустая строка. `word` — одно
+ * непустое слово без пробельных символов (как в `startsWithWord`). Строка собирается
+ * нативным `String.prototype.repeat`, без промежуточного массива; слишком длинный результат
+ * даёт `RangeError` движка (`Invalid string length`).
+ * @param {string} word слово: одно, непустое, без пробельных символов
+ * @param {number} n целое число повторов
+ * @returns {string}
+ * @throws {TypeError} если `word` не строка
+ * @throws {RangeError} если `word` пустое или содержит пробельные символы, либо `n` не целое
+ *   (`NaN`, `Infinity`, дробное, не число)
+ */
+export function repeatWord(word, n) {
+    if (typeof word !== 'string') {
+        throw new TypeError(`word must be a string, got ${typeof word}`);
+    }
+    if (word === '' || /\s/.test(word)) {
+        throw new RangeError('word must be a single non-empty word without whitespace');
+    }
+    if (!Number.isInteger(n)) {
+        throw new RangeError(`n must be an integer, got ${n}`);
+    }
+    return n > 0 ? (word + ' ').repeat(n - 1) + word : '';
+}
+
+/**
+ * Слова строки без повторов в порядке первого появления через один пробел; слово —
+ * непустой отрезок между пробельными символами. Слова сравниваются по NFC, но регистр
+ * различается (`'The the'` → `'The the'`) — в отличие от `hasRepeatedWord`, где регистр
+ * не учитывается. Выводится первое вхождение как есть.
+ * @param {string} text
+ * @returns {string}
+ */
+export function uniqueWords(text) {
+    const seen = new Map();
+    for (const word of words(text)) {
+        const key = word.normalize('NFC');
+        if (!seen.has(key)) seen.set(key, word);
+    }
+    return [...seen.values()].join(' ');
+}
+
+/**
+ * Есть ли в строке слово, повторённое дважды подряд, без учёта регистра (в отличие от
+ * `uniqueWords`, где регистр различается). Слово — непустой отрезок между пробельными
+ * символами (`\s`: пробел, таб, перевод строки, NBSP). Пунктуация — часть слова:
+ * `hasRepeatedWord('the, the')` → `false`. Слова приводятся к NFC, регистр — `toLowerCase`
+ * без учёта локали, поэтому `'Straße STRASSE'` → `false`. Для строки без слов — `false`.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function hasRepeatedWord(text) {
+    const normalized = words(text).map(normalizeWord);
+    for (let i = 1; i < normalized.length; i++) {
+        if (normalized[i] === normalized[i - 1]) return true;
+    }
+    return false;
+}
