@@ -49,6 +49,15 @@ function words(text) {
 }
 
 /**
+ * Слово в виде для сравнения: NFC и нижний регистр.
+ * @param {string} word
+ * @returns {string}
+ */
+function normalizeWord(word) {
+    return word.normalize('NFC').toLowerCase();
+}
+
+/**
  * Число слов в строке: слово — непустой отрезок между пробельными символами.
  * @param {string} text
  * @returns {number}
@@ -163,15 +172,25 @@ export function countVowels(text) {
 
 /**
  * Равно ли первое слово строки `word` без учёта регистра; слово — непустой отрезок между
- * пробельными символами, ведущие пробелы пропускаются. Регистр — `toLowerCase` без учёта
- * локали. Для строки без слов — `false`.
- * @param {string} text
- * @param {string} word
+ * пробельными символами (`\s`: пробел, таб, перевод строки, NBSP), ведущие пробелы
+ * пропускаются. Пунктуация — часть слова: `startsWithWord('hello, world', 'hello')` → `false`.
+ * Обе стороны приводятся к NFC, регистр — `toLowerCase` без учёта локали, поэтому это не
+ * полноценный Unicode case folding: `'Straße'` и `'STRASSE'` не равны. Для строки без слов — `false`.
+ * @param {string} text проверяемая строка
+ * @param {string} word эталонное слово: одно, непустое, без пробельных символов
  * @returns {boolean}
+ * @throws {TypeError} если `word` не строка
+ * @throws {RangeError} если `word` пустое или содержит пробельные символы
  */
 export function startsWithWord(text, word) {
-    const [first] = words(text);
-    return first !== undefined && first.toLowerCase() === word.toLowerCase();
+    if (typeof word !== 'string') {
+        throw new TypeError(`word must be a string, got ${typeof word}`);
+    }
+    if (word === '' || /\s/.test(word)) {
+        throw new RangeError('word must be a single non-empty word without whitespace');
+    }
+    const first = /\S+/.exec(text)?.[0];
+    return first !== undefined && normalizeWord(first) === normalizeWord(word);
 }
 
 /**
