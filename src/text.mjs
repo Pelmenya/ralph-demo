@@ -35,8 +35,18 @@ export function truncate(text, max) {
     return chars.slice(0, max - 1).join('') + '…';
 }
 
-/** Слово — непустой отрезок между пробельными символами (общее для `wordCount` и `titleCase`). */
+/** Слово — непустой отрезок между пробельными символами; общее определение для всего модуля. */
 const WORD = /\S+/g;
+
+/**
+ * Слова строки в порядке следования; для пустой строки и строки без слов — пустой массив.
+ * Каждое слово непустое — на этом держится `codePointAt(0)` в `initials`.
+ * @param {string} text
+ * @returns {string[]}
+ */
+function words(text) {
+    return text.match(WORD) ?? [];
+}
 
 /**
  * Число слов в строке: слово — непустой отрезок между пробельными символами.
@@ -44,7 +54,7 @@ const WORD = /\S+/g;
  * @returns {number}
  */
 export function wordCount(text) {
-    return text.match(WORD)?.length ?? 0;
+    return words(text).length;
 }
 
 /**
@@ -66,23 +76,34 @@ export function titleCase(text) {
 
 /**
  * Пуста ли строка: `true` для пустой строки или строки только из пробельных символов
- * (пробел, табуляция, перевод строки, неразрывный пробел), иначе `false`.
+ * класса `\s` (например, пробел, табуляция, `\r`, `\n`, неразрывный пробел U+00A0,
+ * U+2028/2029, U+3000, а также BOM U+FEFF), иначе `false`. Zero-width space U+200B в `\s`
+ * не входит: `isBlank('\u200b')` → `false`.
  * @param {string} text
  * @returns {boolean}
+ * @throws {TypeError} если `text` не строка (как у остальных функций модуля)
  */
 export function isBlank(text) {
+    if (typeof text !== 'string') {
+        throw new TypeError(`text must be a string, got ${typeof text}`);
+    }
     return !/\S/.test(text);
 }
 
 /**
- * Первые буквы слов в верхнем регистре, без разделителей; слово — непустой отрезок между
- * пробельными символами. Первая буква — первая кодовая точка слова.
+ * Первые символы слов в верхнем регистре, без разделителей; слово — непустой отрезок между
+ * пробельными символами.
+ * Первый символ — это первая кодовая точка слова, а не первая буква: у слова с ведущей
+ * пунктуацией или цифрой берётся она сама (`initials('(ada) «мир»')` → `'(«'`). Символ вне
+ * BMP не разрезается. Регистр — `toUpperCase` без учёта локали, поэтому символ может дать
+ * несколько (`ß` → `SS`: `initials('ßa b')` → `'SSB'`); комбинируемые знаки после первой
+ * кодовой точки теряются (`'e\u0301cole'` → `'E'`).
  * @param {string} text
  * @returns {string}
  */
 export function initials(text) {
-    return (text.match(WORD) ?? [])
-        .map((word) => Array.from(word)[0].toUpperCase())
+    return words(text)
+        .map((word) => String.fromCodePoint(word.codePointAt(0)).toUpperCase())
         .join('');
 }
 
@@ -93,5 +114,5 @@ export function initials(text) {
  * @returns {string}
  */
 export function reverseWords(text) {
-    return (text.match(WORD) ?? []).reverse().join(' ');
+    return words(text).reverse().join(' ');
 }

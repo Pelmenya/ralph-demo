@@ -2,7 +2,15 @@
 // ставить из сети, и его результат зависит только от кода в коммите.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { initials, isBlank, reverseWords, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
+import {
+    initials,
+    isBlank,
+    reverseWords,
+    slugify,
+    titleCase,
+    truncate,
+    wordCount,
+} from '../src/text.mjs';
 
 test('slugify: регистр и разделители', () => {
     assert.equal(slugify('Hello, World!'), 'hello-world');
@@ -120,6 +128,15 @@ test('isBlank: только пробельные символы', () => {
     assert.equal(isBlank(' '), true);
 });
 
+test('isBlank: zero-width space не пробел', () => {
+    assert.equal(isBlank('\u200b'), false);
+});
+
+test('isBlank: не строка — TypeError', () => {
+    assert.throws(() => isBlank(null), TypeError);
+    assert.throws(() => isBlank(undefined), TypeError);
+});
+
 test('isBlank: есть непробельный символ', () => {
     assert.equal(isBlank(' a '), false);
 });
@@ -136,10 +153,34 @@ test('initials: кириллица, табуляция и пробелы по к
     assert.equal(initials(' ёлка\tиз леса '), 'ЁИЛ');
 });
 
+test('initials: символ вне BMP не разрезается', () => {
+    assert.equal(initials('𐐨𐐨 x'), '𐐀X');
+});
+
+test('initials: ведущая пунктуация и цифра берутся как есть; одно слово', () => {
+    assert.equal(initials('(ada) 1st'), '(1');
+    assert.equal(initials('ada'), 'A');
+});
+
+test('initials: расширение регистра и потеря комбинируемого знака', () => {
+    assert.equal(initials('ßa b'), 'SSB');
+    assert.equal(initials('e\u0301cole'), 'E');
+});
+
 test('reverseWords: пустая строка', () => {
     assert.equal(reverseWords(''), '');
 });
 
 test('reverseWords: пробельные символы по краям и между словами не сохраняются', () => {
     assert.equal(reverseWords('  a\tb  c '), 'c b a');
+});
+
+test('reverseWords: одно слово и строка из пробелов', () => {
+    assert.equal(reverseWords('one'), 'one');
+    assert.equal(reverseWords('   '), '');
+});
+
+test('reverseWords: NBSP и \\r\\n разделяют слова, буквы внутри слова не переворачиваются', () => {
+    assert.equal(reverseWords('a\u00a0b\r\nc'), 'c b a');
+    assert.equal(reverseWords('ab cd'), 'cd ab');
 });
