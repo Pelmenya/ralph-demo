@@ -3,10 +3,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+    capitalize,
+    countVowels,
     initials,
     isBlank,
     reverseWords,
     slugify,
+    squeeze,
     titleCase,
     truncate,
     wordCount,
@@ -183,4 +186,68 @@ test('reverseWords: одно слово и строка из пробелов', 
 test('reverseWords: NBSP и \\r\\n разделяют слова, буквы внутри слова не переворачиваются', () => {
     assert.equal(reverseWords('a\u00a0b\r\nc'), 'c b a');
     assert.equal(reverseWords('ab cd'), 'cd ab');
+});
+
+test('capitalize: пустая строка', () => {
+    assert.equal(capitalize(''), '');
+});
+
+test('capitalize: только первая буква, остальное без изменений', () => {
+    assert.equal(capitalize('ёж ЁЖ'), 'Ёж ЁЖ');
+});
+
+test('capitalize: ведущая пунктуация и символ вне BMP не меняются и не разрезаются', () => {
+    assert.equal(capitalize('(ada)'), '(ada)');
+    assert.equal(capitalize('😀a'), '😀a');
+});
+
+test('capitalize: ß даёт SS, ведущая цифра и ведущий пробел не меняются', () => {
+    assert.equal(capitalize('ßa'), 'SSa');
+    assert.equal(capitalize('1st'), '1st');
+    assert.equal(capitalize(' abc'), ' abc');
+});
+
+test('squeeze: пустая строка', () => {
+    assert.equal(squeeze(''), '');
+});
+
+test('squeeze: подряд идущие пробельные символы — один пробел, края обрезаны', () => {
+    assert.equal(squeeze(' a \t\n b '), 'a b');
+    assert.equal(squeeze('a \r\n b'), 'a b');
+});
+
+test('squeeze: строка из одних пробелов — пустая', () => {
+    assert.equal(squeeze(' \t\n '), '');
+});
+
+test('squeeze: NBSP и U+3000 — пробельные, U+200B — нет', () => {
+    assert.equal(squeeze('a\u00a0\u3000b'), 'a b');
+    assert.equal(squeeze('a\u200bb'), 'a\u200bb');
+});
+
+test('countVowels: пустая строка', () => {
+    assert.equal(countVowels(''), 0);
+});
+
+test('countVowels: латиница и кириллица без учёта регистра', () => {
+    assert.equal(countVowels('Hello, Мир'), 3);
+    assert.equal(countVowels('AEIOU аеёиоуыэюя'), 15);
+});
+
+test('countVowels: согласные и цифры не считаются', () => {
+    assert.equal(countVowels('rhythm 123 стр'), 0);
+});
+
+test('countVowels: заглавная кириллица, включая Ё', () => {
+    assert.equal(countVowels('АЕЁИОУЫЭЮЯ'), 10);
+});
+
+test('countVowels: й не гласная, в том числе в разложенной форме', () => {
+    assert.equal(countVowels('йЙ'), 0);
+    assert.equal(countVowels('и\u0306'), 0);
+    assert.equal(countVowels('e\u0301'), 0);
+});
+
+test('countVowels: case folding не добавляет гласных', () => {
+    assert.equal(countVowels('\u1c82'), 0);
 });
