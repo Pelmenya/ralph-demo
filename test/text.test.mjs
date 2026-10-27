@@ -2,7 +2,7 @@
 // ставить из сети, и его результат зависит только от кода в коммите.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { isBlank, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
+import { initials, isBlank, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
 
 test('slugify: регистр и разделители', () => {
     assert.equal(slugify('Hello, World!'), 'hello-world');
@@ -122,4 +122,16 @@ test('isBlank: только пробельные символы', () => {
 
 test('isBlank: есть непробельный символ', () => {
     assert.equal(isBlank(' a '), false);
+});
+
+test('initials: пустая строка', () => {
+    assert.equal(initials(''), '');
+});
+
+test('initials: несколько пробелов между словами', () => {
+    assert.equal(initials('ada  lovelace'), 'AL');
+});
+
+test('initials: кириллица, табуляция и пробелы по краям', () => {
+    assert.equal(initials(' ёлка\tиз леса '), 'ЁИЛ');
 });

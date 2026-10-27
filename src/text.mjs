@@ -73,3 +73,15 @@ export function titleCase(text) {
 export function isBlank(text) {
     return !/\S/.test(text);
 }
+
+/**
+ * Первые буквы слов в верхнем регистре, без разделителей; слово — непустой отрезок между
+ * пробельными символами. Первая буква — первая кодовая точка слова.
+ * @param {string} text
+ * @returns {string}
+ */
+export function initials(text) {
+    return (text.match(WORD) ?? [])
+        .map((word) => Array.from(word)[0].toUpperCase())
+        .join('');
+}
