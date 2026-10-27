@@ -173,3 +173,13 @@ export function startsWithWord(text, word) {
     const [first] = words(text);
     return first !== undefined && first.toLowerCase() === word.toLowerCase();
 }
+
+/**
+ * Последнее слово строки; слово — непустой отрезок между пробельными символами, хвостовые
+ * пробелы пропускаются. Для строки без слов — пустая строка.
+ * @param {string} text
+ * @returns {string}
+ */
+export function lastWord(text) {
+    return words(text).at(-1) ?? '';
+}

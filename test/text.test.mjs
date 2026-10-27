@@ -7,6 +7,7 @@ import {
     countVowels,
     initials,
     isBlank,
+    lastWord,
     reverseWords,
     slugify,
     squeeze,
@@ -266,4 +267,14 @@ test('startsWithWord: ведущие пробелы и регистр не ва�
 test('startsWithWord: сравнивается только первое слово целиком', () => {
     assert.equal(startsWithWord('hello world', 'world'), false);
     assert.equal(startsWithWord('helloworld', 'hello'), false);
+});
+
+test('lastWord: пустая строка и строка без слов — пустая строка', () => {
+    assert.equal(lastWord(''), '');
+    assert.equal(lastWord(' \t\n'), '');
+});
+
+test('lastWord: последнее слово без краевых пробелов', () => {
+    assert.equal(lastWord(' a b\t'), 'b');
+    assert.equal(lastWord('single'), 'single');
 });
