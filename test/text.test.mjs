@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     capitalize,
+    countVowels,
     initials,
     isBlank,
     reverseWords,
@@ -211,4 +212,17 @@ test('squeeze: подряд идущие пробельные символы —
 
 test('squeeze: строка из одних пробелов — пустая', () => {
     assert.equal(squeeze(' \t\n '), '');
+});
+
+test('countVowels: пустая строка', () => {
+    assert.equal(countVowels(''), 0);
+});
+
+test('countVowels: латиница и кириллица без учёта регистра', () => {
+    assert.equal(countVowels('Hello, Мир'), 3);
+    assert.equal(countVowels('AEIOU аеёиоуыэюя'), 15);
+});
+
+test('countVowels: согласные и цифры не считаются', () => {
+    assert.equal(countVowels('rhythm 123 стр'), 0);
 });

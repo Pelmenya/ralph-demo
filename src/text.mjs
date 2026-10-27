@@ -138,3 +138,13 @@ export function capitalize(text) {
 export function squeeze(text) {
     return text.replace(/\s+/gu, ' ').trim();
 }
+
+/**
+ * Число гласных латиницы (`aeiou`) и кириллицы (`аеёиоуыэюя`) без учёта регистра;
+ * `y` и `й` гласными не считаются.
+ * @param {string} text
+ * @returns {number}
+ */
+export function countVowels(text) {
+    return (text.match(/[aeiouаеёиоуыэюя]/giu) ?? []).length;
+}
