@@ -2,7 +2,7 @@
 // ставить из сети, и его результат зависит только от кода в коммите.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { initials, isBlank, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
+import { initials, isBlank, reverseWords, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
 
 test('slugify: регистр и разделители', () => {
     assert.equal(slugify('Hello, World!'), 'hello-world');
@@ -134,4 +134,12 @@ test('initials: несколько пробелов между словами', 
 
 test('initials: кириллица, табуляция и пробелы по краям', () => {
     assert.equal(initials(' ёлка\tиз леса '), 'ЁИЛ');
+});
+
+test('reverseWords: пустая строка', () => {
+    assert.equal(reverseWords(''), '');
+});
+
+test('reverseWords: пробельные символы по краям и между словами не сохраняются', () => {
+    assert.equal(reverseWords('  a\tb  c '), 'c b a');
 });

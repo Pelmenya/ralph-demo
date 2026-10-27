@@ -85,3 +85,13 @@ export function initials(text) {
         .map((word) => Array.from(word)[0].toUpperCase())
         .join('');
 }
+
+/**
+ * Слова в обратном порядке через один пробел; слово — непустой отрезок между пробельными
+ * символами, пробельные символы по краям и между словами не сохраняются.
+ * @param {string} text
+ * @returns {string}
+ */
+export function reverseWords(text) {
+    return (text.match(WORD) ?? []).reverse().join(' ');
+}
