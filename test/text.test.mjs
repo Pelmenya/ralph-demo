@@ -2,7 +2,7 @@
 // ставить из сети, и его результат зависит только от кода в коммите.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
+import { isBlank, slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
 
 test('slugify: регистр и разделители', () => {
     assert.equal(slugify('Hello, World!'), 'hello-world');
@@ -109,4 +109,17 @@ test('titleCase: ведущая пунктуация не меняется, ци
 test('titleCase: \\r\\n, неразрывный пробел и одни пробелы', () => {
     assert.equal(titleCase('a\r\nb\u00a0c'), 'A\r\nB\u00a0C');
     assert.equal(titleCase('   '), '   ');
+});
+
+test('isBlank: пустая строка', () => {
+    assert.equal(isBlank(''), true);
+});
+
+test('isBlank: только пробельные символы', () => {
+    assert.equal(isBlank(' \t\n '), true);
+    assert.equal(isBlank(' '), true);
+});
+
+test('isBlank: есть непробельный символ', () => {
+    assert.equal(isBlank(' a '), false);
 });

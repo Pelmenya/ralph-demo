@@ -63,3 +63,13 @@ export function titleCase(text) {
         word.toLowerCase().replace(/^./u, (first) => first.toUpperCase()),
     );
 }
+
+/**
+ * Пуста ли строка: `true` для пустой строки или строки только из пробельных символов
+ * (пробел, табуляция, перевод строки, неразрывный пробел), иначе `false`.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isBlank(text) {
+    return !/\S/.test(text);
+}
