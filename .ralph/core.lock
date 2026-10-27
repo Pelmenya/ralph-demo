@@ -1,1 +1,12 @@
-{"schemaVersion":1,"canonicalUrl":"https://git.sourcecraft.dev/pelmenya/ralph.git","sha":"1c93053"}
+{
+  "schema": 1,
+  "sha": "f9b00f1f12acdc2e08ad026763aa8439b582f154",
+  "treeHash": "sha256:0c1361d9734c1d35516971cc13cc626a8ecad2bfe42ecb4d1d2d5fa8b3812236",
+  "versions": {
+    "launcher": 1,
+    "core": 1,
+    "config": 1,
+    "state": 2,
+    "adapters": 1
+  }
+}

@@ -1,9 +1,10 @@
 node_modules/
 
+# Конфиг петли локальный: в нём абсолютные корни машины (roots); в git — шаблон *.example.
 # Рантайм-артефакты петли: без секции `roots` в конфиге раннер пишет лог, state, лок и
 # сессии рядом с конфигом. Состав файлов растёт с ядром, поэтому в git — только своё.
 .claude/ralph/*
-!.claude/ralph/ralph.config.json
+!.claude/ralph/ralph.config.json.example
 !.claude/ralph/ralph.project.md
 
 # Секреты форжа и модели живут в окружении, не в дереве.
