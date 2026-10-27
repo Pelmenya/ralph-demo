@@ -43,3 +43,16 @@ export function truncate(text, max) {
 export function wordCount(text) {
     return text.match(/\S+/g)?.length ?? 0;
 }
+
+/**
+ * Первая буква каждого слова — заглавная, остальные — строчные; слово — непустой отрезок
+ * между пробельными символами, сами пробельные символы сохраняются как есть.
+ * @param {string} text
+ * @returns {string}
+ */
+export function titleCase(text) {
+    return text.replace(/\S+/g, (word) => {
+        const [first, ...rest] = Array.from(word);
+        return first.toUpperCase() + rest.join('').toLowerCase();
+    });
+}

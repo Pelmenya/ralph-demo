@@ -2,7 +2,7 @@
 // ставить из сети, и его результат зависит только от кода в коммите.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { slugify, truncate, wordCount } from '../src/text.mjs';
+import { slugify, titleCase, truncate, wordCount } from '../src/text.mjs';
 
 test('slugify: регистр и разделители', () => {
     assert.equal(slugify('Hello, World!'), 'hello-world');
@@ -70,4 +70,16 @@ test('wordCount: одно слово', () => {
 test('wordCount: \\r\\n и неразрывный пробел разделяют слова', () => {
     assert.equal(wordCount('a\r\nb'), 2);
     assert.equal(wordCount('a\u00a0b'), 2);
+});
+
+test('titleCase: пустая строка остаётся пустой', () => {
+    assert.equal(titleCase(''), '');
+});
+
+test('titleCase: первая буква заглавная, остальные строчные', () => {
+    assert.equal(titleCase('hello WORLD'), 'Hello World');
+});
+
+test('titleCase: пробельные символы сохраняются как есть', () => {
+    assert.equal(titleCase('  a\tb\n'), '  A\tB\n');
 });
