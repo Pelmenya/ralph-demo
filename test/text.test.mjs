@@ -7,9 +7,11 @@ import {
     countVowels,
     initials,
     isBlank,
+    lastWord,
     reverseWords,
     slugify,
     squeeze,
+    startsWithWord,
     titleCase,
     truncate,
     wordCount,
@@ -250,4 +252,60 @@ test('countVowels: й не гласная, в том числе в разлож�
 
 test('countVowels: case folding не добавляет гласных', () => {
     assert.equal(countVowels('\u1c82'), 0);
+});
+
+test('startsWithWord: пустая строка и строка без слов — false', () => {
+    assert.equal(startsWithWord('', 'a'), false);
+    assert.equal(startsWithWord('   ', 'a'), false);
+});
+
+test('startsWithWord: ведущие пробелы и регистр не важны', () => {
+    assert.equal(startsWithWord('\t\n Hello', 'hello'), true);
+    assert.equal(startsWithWord('\u00a0Hello', 'hello'), true);
+    assert.equal(startsWithWord('  Hello world', 'hello'), true);
+    assert.equal(startsWithWord('hello world', 'HELLO'), true);
+});
+
+test('startsWithWord: сравнивается только первое слово целиком', () => {
+    assert.equal(startsWithWord('hello world', 'world'), false);
+    assert.equal(startsWithWord('helloworld', 'hello'), false);
+});
+
+test('lastWord: пустая строка и строка без слов — пустая строка', () => {
+    assert.equal(lastWord(''), '');
+    assert.equal(lastWord(' \t\n'), '');
+});
+
+test('lastWord: последнее слово без краевых пробелов', () => {
+    assert.equal(lastWord(' a b\t'), 'b');
+    assert.equal(lastWord('single'), 'single');
+});
+
+test('startsWithWord: пунктуация — часть слова', () => {
+    assert.equal(startsWithWord('hello, world', 'hello'), false);
+    assert.equal(startsWithWord('hello, world', 'hello,'), true);
+});
+
+test('startsWithWord: не-латиница и NFC', () => {
+    assert.equal(startsWithWord('Привет мир', 'ПРИВЕТ'), true);
+    assert.equal(startsWithWord('e\u0301cole', '\u00e9cole'), true);
+});
+
+test('startsWithWord: не полноценный case folding', () => {
+    assert.equal(startsWithWord('Straße x', 'STRASSE'), false);
+});
+
+test('startsWithWord: некорректный word — ошибка вызова независимо от text', () => {
+    assert.throws(() => startsWithWord('x', undefined), TypeError);
+    assert.throws(() => startsWithWord('', undefined), TypeError);
+    assert.throws(() => startsWithWord('a', ''), RangeError);
+    assert.throws(() => startsWithWord('hello world', 'hello world'), RangeError);
+    assert.throws(() => startsWithWord('hello', ' hello'), RangeError);
+});
+
+test('lastWord: пунктуация, не-BMP и разные хвостовые пробелы', () => {
+    assert.equal(lastWord('the end.'), 'end.');
+    assert.equal(lastWord('hi 👋'), '👋');
+    assert.equal(lastWord('a b\n'), 'b');
+    assert.equal(lastWord('a b\u00a0'), 'b');
 });
