@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     capitalize,
+    repeatWord,
     countVowels,
     initials,
     isBlank,
@@ -308,4 +309,14 @@ test('lastWord: пунктуация, не-BMP и разные хвостовы�
     assert.equal(lastWord('hi 👋'), '👋');
     assert.equal(lastWord('a b\n'), 'b');
     assert.equal(lastWord('a b\u00a0'), 'b');
+});
+
+test('repeatWord: n <= 0 дают пустую строку', () => {
+    assert.equal(repeatWord('a', 0), '');
+    assert.equal(repeatWord('a', -2), '');
+});
+
+test('repeatWord: слово n раз через пробел', () => {
+    assert.equal(repeatWord('ой', 3), 'ой ой ой');
+    assert.equal(repeatWord('a', 1), 'a');
 });

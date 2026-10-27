@@ -202,3 +202,13 @@ export function startsWithWord(text, word) {
 export function lastWord(text) {
     return words(text).at(-1) ?? '';
 }
+
+/**
+ * Слово, повторённое `n` раз через пробел; при `n <= 0` — пустая строка.
+ * @param {string} word
+ * @param {number} n
+ * @returns {string}
+ */
+export function repeatWord(word, n) {
+    return n > 0 ? Array(Math.floor(n)).fill(word).join(' ') : '';
+}
